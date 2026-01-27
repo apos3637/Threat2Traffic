@@ -48,7 +48,7 @@ Threat2Traffic addresses the data scarcity problem in cybersecurity research by 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/apos3637/Threat2Traffic.git
 cd Threat2Traffic
 ```
 
@@ -90,14 +90,14 @@ cp Task2/.env.example Task2/.env
 |----------|----------|-------------|
 | `VT_API_KEY` | Yes | VirusTotal API key for malware analysis |
 | `LLM_API_KEY` | Yes | LLM API key (e.g., DeepSeek, OpenAI) |
-| `LLM_BASE_URL` | No | LLM API base URL (default: DeepSeek) |
+| `LLM_BASE_URL` | No | LLM API base URL (default: DeepSeek, (Openai competitable format) )|
 | `LLM_MODEL` | No | LLM model name (default: deepseek-chat) |
 
 #### Task2 Configuration (`Task2/.env`)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `LLM_API_KEY` | Yes | LLM API key for code generation |
+| `LLM_API_KEY` | Yes | LLM API key |
 | `LLM_BASE_URL` | No | LLM API base URL |
 | `LLM_MODEL` | No | LLM model name |
 
