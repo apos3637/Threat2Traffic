@@ -1,0 +1,18 @@
+[project]
+name = "threat2traffic"
+version = "0.1.0"
+description = "Automated malware execution environment synthesis"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.28.1",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0",
+    "matplotlib>=3.10.0",
+    "numpy>=2.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+]
