@@ -57,10 +57,6 @@ cd Threat2Traffic
 uv sync
 ```
 
-Or using pip:
-```bash
-pip install -r requirements.txt
-```
 
 ### Dependencies
 
