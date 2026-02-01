@@ -93,15 +93,6 @@ cp Task2/.env.example Task2/.env
 | `LLM_BASE_URL` | No | LLM API base URL (default: DeepSeek, (Openai competitable format) )|
 | `LLM_MODEL` | No | LLM model name (default: deepseek-chat) |
 
-#### Task2 Configuration (`Task2/.env`)
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LLM_API_KEY` | Yes | LLM API key |
-| `LLM_BASE_URL` | No | LLM API base URL |
-| `LLM_MODEL` | No | LLM model name |
-
-
 ## Usage
 
 ### Task1: Environment Specification Extraction
