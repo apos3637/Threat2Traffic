@@ -25,19 +25,10 @@ class QemuConfig:
 
 
 @dataclass
-class AWSConfig:
-    """AWS provider configuration."""
-    access_key: Optional[str] = None
-    secret_key: Optional[str] = None
-    region: str = "us-east-1"
-
-
-@dataclass
 class Stage2Config:
     """Main configuration for Stage II tools."""
     tencentcloud: TencentCloudConfig = field(default_factory=TencentCloudConfig)
     qemu: QemuConfig = field(default_factory=QemuConfig)
-    aws: AWSConfig = field(default_factory=AWSConfig)
 
     # Provider selection
     default_provider: str = "tencentcloud"
@@ -78,17 +69,9 @@ class Stage2Config:
             network_name=os.getenv("LIBVIRT_NETWORK", "default"),
         )
 
-        # AWS configuration
-        aws_config = AWSConfig(
-            access_key=os.getenv("AWS_ACCESS_KEY_ID"),
-            secret_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-            region=os.getenv("AWS_REGION", "us-east-1"),
-        )
-
         return cls(
             tencentcloud=tencentcloud_config,
             qemu=qemu_config,
-            aws=aws_config,
             default_provider=os.getenv("DEFAULT_PROVIDER", "tencentcloud"),
             output_dir=Path(os.getenv("OUTPUT_DIR", str(Path(__file__).parent / "output"))),
         )

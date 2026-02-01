@@ -370,7 +370,7 @@ Examples:
         help="Path to EnvironmentSpecification JSON file (omit to dump full provider schema)",
     )
     p_constraint.add_argument(
-        "--provider", type=str, choices=["tencentcloud", "qemu", "aws"],
+        "--provider", type=str, choices=["tencentcloud", "qemu"],
         default=None, help="Target provider (default: from config)",
     )
     p_constraint.add_argument(
@@ -391,7 +391,7 @@ Examples:
         help="Path to Terraform HCL file to validate",
     )
     p_validate.add_argument(
-        "--provider", type=str, choices=["tencentcloud", "qemu", "aws"],
+        "--provider", type=str, choices=["tencentcloud", "qemu"],
         default=None, help="Provider for provider-specific checks",
     )
     p_validate.add_argument(

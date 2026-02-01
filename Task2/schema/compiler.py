@@ -175,13 +175,6 @@ class ConstraintCompiler:
             "security_group": "tencentcloud_security_group",
             "security_group_rule": "tencentcloud_security_group_rule",
         },
-        "aws": {
-            "compute_instance": "aws_instance",
-            "vpc": "aws_vpc",
-            "subnet": "aws_subnet",
-            "security_group": "aws_security_group",
-            "internet_gateway": "aws_internet_gateway",
-        },
         "qemu": {
             "compute_instance": "libvirt_domain",
             "volume": "libvirt_volume",

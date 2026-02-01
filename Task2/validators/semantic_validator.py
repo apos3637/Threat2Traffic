@@ -31,19 +31,6 @@ class SemanticValidator:
     def __init__(self, terraform_path: str = "terraform"):
         self.terraform_path = terraform_path
 
-        # Known deprecated resource attributes by provider
-        self._deprecated_attrs = {
-            "tencentcloud": {
-                "tencentcloud_instance": ["security_groups"],  # Use orderly_security_groups
-            },
-            "qemu": {
-                "libvirt_domain": ["cmdline"],  # Deprecated in newer versions
-            },
-            "aws": {
-                "aws_instance": ["security_groups"],  # Use vpc_security_group_ids
-            },
-        }
-
     async def validate(
         self,
         hcl_code: str,
@@ -166,22 +153,6 @@ class SemanticValidator:
     ) -> list[ValidationIssue]:
         """Run static semantic checks on HCL code."""
         issues = []
-
-        # Check for deprecated attributes
-        if provider:
-            provider_name = provider.provider_name
-            deprecated = self._deprecated_attrs.get(provider_name, {})
-
-            for resource_type, attrs in deprecated.items():
-                for attr in attrs:
-                    if f'"{attr}"' in hcl_code or f"{attr} " in hcl_code or f"{attr}=" in hcl_code:
-                        issues.append(ValidationIssue(
-                            tier=ValidationTier.SEMANTIC,
-                            severity=ValidationSeverity.WARNING,
-                            message=f"Deprecated attribute '{attr}' used in {resource_type}",
-                            resource=resource_type,
-                            suggestion=f"Consider updating to the non-deprecated alternative",
-                        ))
 
         # Check for hardcoded secrets (basic pattern matching)
         secret_patterns = [
