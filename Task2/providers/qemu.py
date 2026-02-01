@@ -1,4 +1,4 @@
-"""Libvirt (QEMU/KVM) provider implementation."""
+"""QEMU/KVM provider implementation (via libvirt Terraform provider)."""
 
 from typing import Optional
 import sys
@@ -18,13 +18,13 @@ from Task2.config import get_config
 from .base_provider import IaCProvider
 
 
-class LibvirtProvider(IaCProvider):
-    """Libvirt (QEMU/KVM) provider implementation for local virtualization."""
+class QemuProvider(IaCProvider):
+    """QEMU/KVM provider implementation for local virtualization."""
 
-    provider_name = "libvirt"
+    provider_name = "qemu"
 
     def __init__(self):
-        self.config = get_config().libvirt
+        self.config = get_config().qemu
         self._image_mapping = self._load_image_mapping()
 
     def _load_image_mapping(self) -> dict:

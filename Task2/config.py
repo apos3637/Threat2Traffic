@@ -1,4 +1,4 @@
-"""Configuration for Stage II: Invariant-Guided Synthesis."""
+"""Configuration for Stage II tools: Constraint Acquisition and Validation."""
 
 import os
 from pathlib import Path
@@ -6,17 +6,6 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from dotenv import load_dotenv
-
-
-@dataclass
-class LLMConfig:
-    """LLM API configuration."""
-    api_key: str
-    base_url: str = "https://api.deepseek.com/v1"
-    model: str = "deepseek-chat"
-    temperature: float = 0.3  # Lower temperature for code generation
-    max_tokens: int = 8192
-    timeout: int = 180
 
 
 @dataclass
@@ -28,8 +17,8 @@ class TencentCloudConfig:
 
 
 @dataclass
-class LibvirtConfig:
-    """Libvirt provider configuration."""
+class QemuConfig:
+    """QEMU/KVM provider configuration."""
     uri: str = "qemu:///system"
     storage_pool: str = "default"
     network_name: str = "default"
@@ -45,18 +34,13 @@ class AWSConfig:
 
 @dataclass
 class Stage2Config:
-    """Main configuration for Stage II."""
-    llm: LLMConfig
+    """Main configuration for Stage II tools."""
     tencentcloud: TencentCloudConfig = field(default_factory=TencentCloudConfig)
-    libvirt: LibvirtConfig = field(default_factory=LibvirtConfig)
+    qemu: QemuConfig = field(default_factory=QemuConfig)
     aws: AWSConfig = field(default_factory=AWSConfig)
 
     # Provider selection
     default_provider: str = "tencentcloud"
-
-    # Synthesis parameters
-    max_iterations: int = 8
-    validate_only: bool = False
 
     # Output
     output_dir: Path = field(default_factory=lambda: Path("output"))
@@ -80,21 +64,6 @@ class Stage2Config:
         if env_path and env_path.exists():
             load_dotenv(env_path)
 
-        # LLM configuration (reuse from Stage I)
-        llm_api_key = os.getenv("LLM_API_KEY", "") or os.getenv("DEEPSEEK_API_KEY", "")
-        llm_base_url = os.getenv("LLM_BASE_URL", "https://api.deepseek.com/v1")
-        llm_model = os.getenv("LLM_MODEL", "deepseek-chat")
-
-        if not llm_api_key:
-            raise ValueError("LLM_API_KEY or DEEPSEEK_API_KEY not found in environment")
-
-        llm_config = LLMConfig(
-            api_key=llm_api_key,
-            base_url=llm_base_url,
-            model=llm_model,
-            temperature=float(os.getenv("LLM_TEMPERATURE", "0.3")),
-        )
-
         # Tencent Cloud configuration
         tencentcloud_config = TencentCloudConfig(
             secret_id=os.getenv("TENCENTCLOUD_SECRET_ID"),
@@ -102,8 +71,8 @@ class Stage2Config:
             region=os.getenv("TENCENTCLOUD_REGION", "ap-guangzhou"),
         )
 
-        # Libvirt configuration
-        libvirt_config = LibvirtConfig(
+        # QEMU/KVM configuration
+        qemu_config = QemuConfig(
             uri=os.getenv("LIBVIRT_URI", "qemu:///system"),
             storage_pool=os.getenv("LIBVIRT_STORAGE_POOL", "default"),
             network_name=os.getenv("LIBVIRT_NETWORK", "default"),
@@ -117,12 +86,10 @@ class Stage2Config:
         )
 
         return cls(
-            llm=llm_config,
             tencentcloud=tencentcloud_config,
-            libvirt=libvirt_config,
+            qemu=qemu_config,
             aws=aws_config,
             default_provider=os.getenv("DEFAULT_PROVIDER", "tencentcloud"),
-            max_iterations=int(os.getenv("MAX_ITERATIONS", "8")),
             output_dir=Path(os.getenv("OUTPUT_DIR", str(Path(__file__).parent / "output"))),
         )
 

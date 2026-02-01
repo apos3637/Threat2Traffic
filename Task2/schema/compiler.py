@@ -182,7 +182,7 @@ class ConstraintCompiler:
             "security_group": "aws_security_group",
             "internet_gateway": "aws_internet_gateway",
         },
-        "libvirt": {
+        "qemu": {
             "compute_instance": "libvirt_domain",
             "volume": "libvirt_volume",
             "cloudinit": "libvirt_cloudinit_disk",
@@ -241,8 +241,8 @@ class ConstraintCompiler:
             if "volume" in mappings:
                 resources.append(mappings["volume"])
 
-        # Libvirt-specific: always need cloudinit for user_data
-        if provider_name == "libvirt":
+        # QEMU-specific: always need cloudinit for user_data
+        if provider_name == "qemu":
             if "cloudinit" in mappings:
                 resources.append(mappings["cloudinit"])
             if "volume" in mappings and mappings["volume"] not in resources:

@@ -1,11 +1,8 @@
-"""Data models for Stage II: Invariant-Guided Synthesis."""
+"""Data models for Stage II tools: Constraint Acquisition and Validation."""
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 from enum import Enum
-from datetime import datetime
-from pathlib import Path
-import json
 
 
 class ValidationTier(str, Enum):
@@ -19,33 +16,6 @@ class ValidationSeverity(str, Enum):
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
-
-
-@dataclass
-class GeneratedScript:
-    """Generated installation script with metadata."""
-    content: str
-    script_type: str  # "bash", "powershell", "batch"
-    filename: str     # e.g., "user_data.ps1"
-    description: Optional[str] = None
-
-    @classmethod
-    def bash(cls, content: str, description: str = "") -> "GeneratedScript":
-        """Create a bash script."""
-        return cls(content, "bash", "user_data.sh", description)
-
-    @classmethod
-    def powershell(cls, content: str, description: str = "") -> "GeneratedScript":
-        """Create a PowerShell script."""
-        return cls(content, "powershell", "user_data.ps1", description)
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "content": self.content,
-            "script_type": self.script_type,
-            "filename": self.filename,
-            "description": self.description,
-        }
 
 
 @dataclass
@@ -94,7 +64,7 @@ class ValidationResult:
 
     @property
     def feedback(self) -> str:
-        """Format issues as feedback string for refinement."""
+        """Format issues as feedback string."""
         if not self.issues:
             return "No issues found."
 
@@ -121,81 +91,6 @@ class ValidationResult:
             "warning_count": len(self.warnings),
             "duration_seconds": self.duration_seconds,
         }
-
-
-@dataclass
-class SynthesisResult:
-    """Result of the synthesis process."""
-    success: bool
-    terraform_code: Optional[str] = None
-    iterations: int = 0
-    provider_used: str = ""
-    validation_history: List[ValidationResult] = field(default_factory=list)
-    error_message: Optional[str] = None
-    user_data_script: Optional[GeneratedScript] = None
-    created_at: datetime = field(default_factory=datetime.now)
-    duration_seconds: float = 0.0
-
-    @classmethod
-    def failure(cls, message: str, **kwargs) -> "SynthesisResult":
-        """Create a failure result."""
-        return cls(success=False, error_message=message, **kwargs)
-
-    @classmethod
-    def from_success(
-        cls,
-        terraform_code: str,
-        iterations: int,
-        provider: str,
-        validation_history: List[ValidationResult],
-        user_data_script: Optional[GeneratedScript] = None,
-        duration: float = 0.0,
-    ) -> "SynthesisResult":
-        """Create a success result."""
-        return cls(
-            success=True,
-            terraform_code=terraform_code,
-            iterations=iterations,
-            provider_used=provider,
-            validation_history=validation_history,
-            user_data_script=user_data_script,
-            duration_seconds=duration,
-        )
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "success": self.success,
-            "terraform_code": self.terraform_code,
-            "iterations": self.iterations,
-            "provider_used": self.provider_used,
-            "validation_history": [v.to_dict() for v in self.validation_history],
-            "error_message": self.error_message,
-            "user_data_script": self.user_data_script.to_dict() if self.user_data_script else None,
-            "created_at": self.created_at.isoformat(),
-            "duration_seconds": self.duration_seconds,
-        }
-
-    def to_json(self, indent: int = 2) -> str:
-        return json.dumps(self.to_dict(), indent=indent)
-
-    def save(self, output_dir: Path) -> None:
-        """Save Terraform configuration and metadata to files."""
-        output_dir = Path(output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
-
-        # Save main.tf
-        if self.terraform_code:
-            main_tf = output_dir / "main.tf"
-            main_tf.write_text(self.terraform_code)
-
-        # Save user_data script if present
-        if self.user_data_script:
-            script_file = output_dir / self.user_data_script.filename
-            script_file.write_text(self.user_data_script.content)
-
-        # Save synthesis metadata
-        metadata_file = output_dir / "synthesis_result.json"
-        metadata_file.write_text(self.to_json())
 
 
 @dataclass

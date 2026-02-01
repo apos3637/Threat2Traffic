@@ -36,7 +36,7 @@ class SemanticValidator:
             "tencentcloud": {
                 "tencentcloud_instance": ["security_groups"],  # Use orderly_security_groups
             },
-            "libvirt": {
+            "qemu": {
                 "libvirt_domain": ["cmdline"],  # Deprecated in newer versions
             },
             "aws": {

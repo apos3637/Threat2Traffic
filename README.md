@@ -1,6 +1,7 @@
 # Threat2Traffic
 
 ## Overview
+This repo contains the core source code of the two-stage framework of Threat2Traffic
 
 Threat2Traffic addresses the data scarcity problem in cybersecurity research by automatically synthesizing tailored execution environments that trigger authentic malware behaviors. This dataset comprises PCAP files capturing real malware network traffic across 8 malware families.
 
@@ -41,8 +42,7 @@ Threat2Traffic addresses the data scarcity problem in cybersecurity research by 
 
 ### Prerequisites
 
-- Python >= 3.14
-- [uv](https://github.com/astral-sh/uv)
+- We recommand using [uv](https://github.com/astral-sh/uv) for virtual environment and 
 
 ### Setup
 
@@ -110,8 +110,39 @@ cp Task2/.env.example Task2/.env
 uv run python -m Task1.main <malware_sample_path>
 ```
 
-### Task2: Terraform Code Synthesis
+### Task2: Constraint Acquisition, Prompt Assembly and Validation
+
+> **Note:** Task2 provides constraint compilation, adaptive prompt assembly, and syntax/semantic validation. It does **not** include an LLM generation function — users need to supply their own LLM calling logic to consume the assembled prompt and produce Terraform HCL.
+
+#### Compile platform constraints
 
 ```bash
-uv run python -m Task2.cli synthesize --spec <spec.json> --provider <provider>
+# Dump full provider schema (YAML)
+uv run python -m Task2.cli constraint --provider qemu
+
+# Compile filtered constraints from a spec
+uv run python -m Task2.cli constraint --spec <spec.json> --provider qemu
+
+# JSON-only output
+uv run python -m Task2.cli constraint --spec <spec.json> --provider qemu --json
 ```
+
+#### Adaptive prompt assembly
+
+Assemble a complete LLM prompt whose sections are conditionally included based on the spec content (OS, software dependencies, network, hardware, threat profile, attack chain, platform constraints). Different specs produce structurally different prompts.
+
+```bash
+uv run python -m Task2.cli constraint --spec <spec.json> --provider qemu --prompt
+# → Prompt saved to Task2/output/<hash>_prompt.txt
+```
+
+#### Validate Terraform HCL
+
+```bash
+# Syntax + semantic validation
+uv run python -m Task2.cli validate --hcl main.tf --provider qemu
+
+# Syntax-only
+uv run python -m Task2.cli validate --hcl main.tf --syntax-only
+```
+
