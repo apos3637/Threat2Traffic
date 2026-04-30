@@ -1,48 +1,31 @@
 # Threat2Traffic
 
 ## Overview
-This repo contains the core source code of the two-stage framework of Threat2Traffic
+This repo contains the core source code of the two-stage framework of Threat2Traffic, and reorganize for cleaner usage. 
 
-Threat2Traffic addresses the data scarcity problem in cybersecurity research by automatically synthesizing tailored execution environments that trigger authentic malware behaviors. This dataset comprises PCAP files capturing real malware network traffic across 8 malware families.
+Threat2Traffic addresses the data scarcity problem in cybersecurity research by automatically synthesizing tailored execution environments that trigger authentic malware behaviors.
 
 ## Repository Structure
 
 ```
 .
 ├── Task1/
-├── Task2/
-└── pcap/
-    ├── adware/
-    │   ├── 1.pcap
-    │   └── ...
-    ├── coinminer/
-    │   ├── 1.pcap
-    │   └── ...
-    ├── downloader/
-    │   ├── 1.pcap
-    │   └── ...
-    ├── infostealer/
-    │   ├── 1.pcap
-    │   └── ...
-    ├── ransomware/
-    │   ├── 1.pcap
-    │   └── ...
-    ├── rat/
-    │   ├── 1.pcap
-    │   └── ...
-    ├── spyware/
-    │   ├── 1.pcap
-    │   └── ...
-    └── vidar/
-        ├── 1.pcap
-        └── ...
+    ├── agents/
+    ├── deliberation/
+    ├── evidence_graph/
+    ├── vt_client/
+    └── ...
+└── Task2/
+    ├── schema/
+    ├── validators/
+    ├── models.py
+    └── ...
 ```
-
 ## Installation
 
 ### Prerequisites
 
-- We recommand using [uv](https://github.com/astral-sh/uv) for virtual environment and 
+- We recommand using [uv](https://github.com/astral-sh/uv) for virtual environment and use self-build LLM agent structure and tool design for better and cleaner codebase (not using framework like langchain etc.)
 
 ### Setup
 
@@ -86,8 +69,8 @@ cp Task2/.env.example Task2/.env
 |----------|----------|-------------|
 | `VT_API_KEY` | Yes | VirusTotal API key for malware analysis |
 | `LLM_API_KEY` | Yes | LLM API key (e.g., DeepSeek, OpenAI) |
-| `LLM_BASE_URL` | No | LLM API base URL (default: DeepSeek, (Openai competitable format) )|
-| `LLM_MODEL` | No | LLM model name (default: deepseek-chat) |
+| `LLM_BASE_URL` | Yes | LLM API base URL (default: DeepSeek, (Openai competitable format) )|
+| `LLM_MODEL` | Yes | LLM model name (default: deepseek-chat) |
 
 ## Usage
 
